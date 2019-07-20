@@ -1,10 +1,7 @@
 import React, {Component} from 'react'
-import Service from '../Index-service'
 import { Container, Card, Image, Icon } from 'semantic-ui-react';
 import RefreshedToken from './rtoken'
 import Axios from 'axios';
-
-const service = new Service()
 
 export default class Profiles extends Component {
 	constructor(props){

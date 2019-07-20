@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import Service from '../Index-service'
+import Service from './indexService'
 import { Segment, Feed, Accordion, Tab, Item, Container, Button } from 'semantic-ui-react';
 import RefreshedToken from './rtoken'
 import FeedComment from './meetComment' 
@@ -13,7 +13,7 @@ export default class MeetList extends Component {
 		this.state = {
 			meetings : [],
 			comments : {},
-			socket: {},
+			websocket: {},
 			activeIndex: -1,
 			access: '',
 		}
@@ -27,9 +27,9 @@ export default class MeetList extends Component {
 		this.UpdateMeetings();
 		this.UpdateComments();
 
-		var socket = new WebSocket("ws://localhost:8000/ws/comment/")
+		var websocket = new WebSocket("ws://localhost:8000/ws/comment/")
 
-		socket.onmessage = (event) => {
+		websocket.onmessage = (event) => {
 			var comment = JSON.parse(event.data).comment
 			var {comments} = this.state
 			if(comments[comment.meet] == undefined)
@@ -37,10 +37,10 @@ export default class MeetList extends Component {
 			comments[comment.meet].push(comment)
 			this.setState({comments: comments})
 		}
-		socket.onopen = (event) => {console.log('opened')}
-		socket.onclose = (event) => {console.log('closed')}
-		socket.onerror = (event) => {console.log('error')}
-		this.setState({socket: socket})
+		websocket.onopen = (event) => {console.log('opened')}
+		websocket.onclose = (event) => {console.log('closed')}
+		websocket.onerror = (event) => {console.log('error')}
+		this.setState({websocket: websocket})
 	}
 
 
@@ -90,8 +90,8 @@ export default class MeetList extends Component {
 		}
 		this.registerComment(comment)
 		.then(data => {
-			var { socket } = this.state
-			socket.send(JSON.stringify(data))
+			var { websocket } = this.state
+			websocket.send(JSON.stringify(data))
 			console.log("handleComment")
 		})
 		.catch(error => {console.log(error)})

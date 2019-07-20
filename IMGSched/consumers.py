@@ -1,15 +1,12 @@
 from channels.generic.websocket import AsyncWebsocketConsumer
 import json
 
-
-API_URL = "http://localhost:8000/api/comments/" 
-
-class CommentConsumer(AsyncWebsocketConsumer):
+class ChatConsumer(AsyncWebsocketConsumer):
     async def connect(self):
-        self.group_name = 'comments'
+        self.room_group_name = 'comments'
 
         await self.channel_layer.group_add(
-            self.group_name,
+            self.room_group_name,
             self.channel_name
         )
 
@@ -18,7 +15,7 @@ class CommentConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         self.channel_layer.group_discard(
-            self.group_name,
+            self.room_group_name,
             self.channel_name
         )
 
@@ -26,12 +23,8 @@ class CommentConsumer(AsyncWebsocketConsumer):
     async def receive(self, text_data):
         comment = json.loads(text_data)
         
-        # response = requests.post(url=API_URL, data={**json_data})
-        print('*'*50)
-        print(comment)
-        print('*'*50)
         await self.channel_layer.group_send(
-            self.group_name,
+            self.room_group_name,
             {
             'type': 'user_comment',
             'comment': comment,

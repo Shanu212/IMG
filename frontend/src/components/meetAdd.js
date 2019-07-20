@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Message, Form, Button, Dropdown, Container, Segment } from 'semantic-ui-react';
 import RefreshedToken from './rtoken';
-import Service from '../Index-service';
+import Service from './indexService';
 
 var service = new Service();
 
@@ -92,11 +92,7 @@ export default class MeetAdd extends Component{
 				/>
         		<Form.Input required label='Time' placeholder='HH:MM:SS' name='time' onChange={this.handleChange}/>
         		<Form.Input required label='Date' placeholder='YYYY-DD-MM' name='date' onChange={this.handleChange}/>
-        		<Dropdown 
-        			multiple
-        			search
-        			clearable
-        			selection
+        		<Dropdown multiple search clearable selection
         			placeholder='participants'
         			options={this.state.soptions}
         			onChange={this.adropdown}

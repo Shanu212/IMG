@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Menu, Segment, Container, Form, Message, List, Button, Divider } from 'semantic-ui-react';
-import Service from '../Index-service';
+import Service from './indexService';
 const service = new Service();
 
 export default class Authenticate extends Component {
@@ -45,15 +45,12 @@ export default class Authenticate extends Component {
         data['username'] = username
         data['email'] = email
         data['password'] = password
-        //console.log(this.state)
         service.createUser(data)
         .then(response => {
             this.success()
-            //console.log(response)
         })
         .catch(error => {
             this.failure(error)
-            //console.log(error.response.data)
         })
     }
 

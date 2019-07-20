@@ -3,5 +3,5 @@ from django.conf.urls import url
 from . import consumers
 
 websocket_urlpatterns = [
-    url(r'^ws/comment/', consumers.CommentConsumer),
+    url(r'^ws/comment/', consumers.ChatConsumer),
 ]

@@ -5,8 +5,6 @@ import RefreshedToken from './rtoken'
 import FeedComment from './meetComment' 
 import Axios from 'axios';
 
-const service = new Service()
-
 export default class Profiles extends Component {
 	constructor(props){
 		super(props);

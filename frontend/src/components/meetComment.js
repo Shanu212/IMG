@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import Service from '../Index-service'
+import Service from './indexService'
 import {Comment, Form, Button, Header, Container} from 'semantic-ui-react'
 import RefreshedToken from './rtoken';
 
@@ -80,16 +80,13 @@ export default class FeedComment extends Component {
                     Comments
                     </Header>
 
-
-
                     {comments.map(comment => {
-                        var time  = comment.time.slice(0, -1).split("T")
                         return (<Comment key={comment.id}>
                         <Comment.Avatar src='https://react.semantic-ui.com/images/avatar/small/matt.jpg' />
                         <Comment.Content>
-                            <Comment.Author as='a'>{comment.username}</Comment.Author>
+                            <Comment.Author>{comment.username}</Comment.Author>
                             <Comment.Metadata>
-                            <div>{time[0]} at {time[1]}</div>
+                            <div>{comment.time.slice(0, 10)} at {comment.time.slice(11, 19)}</div>
                             </Comment.Metadata>
                             <Comment.Text>{comment.comment}</Comment.Text>
                         </Comment.Content>

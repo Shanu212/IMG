@@ -17,8 +17,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
-    permission_classes = (IsAuthenticated, )
-
+    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
@@ -34,7 +33,6 @@ class MeetingViewSet(viewsets.ModelViewSet):
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
     serializer_class = CommentSerializer
-    #permission_classes = (IsAuthenticated, )
 
     def perform_create(self, serializer): 
         serializer.save(time=timezone.now())
@@ -55,7 +53,6 @@ class UserViewSet(viewsets.ModelViewSet):
         serializer = MeetingSerializer(queryset, many=True)
         print(queryset)
         return Response(serializer.data)
-
 
     def get_object(self):
         queryset = self.get_queryset()
