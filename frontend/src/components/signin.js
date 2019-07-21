@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Menu, Segment, Container, Form, Message, List, Button, Divider } from 'semantic-ui-react';
+import GoogleLogin from 'react-google-login'
 import Axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
@@ -23,7 +24,7 @@ export default class Signin extends Component {
             password: this.state.user.password,
         })
         .then(response => {
-            console.log(response, "fine")
+            console.log(response)
             var user = {}
             user['refresh'] = response.data.refresh
             Axios.get(`http://localhost:8000/api/users/${this.state.user.username}`, {
@@ -65,7 +66,7 @@ export default class Signin extends Component {
                    }} />
      }              
 
-	render(){
+	render(){   
 		return(
 			<Container>
 			{this.shouldRedirect()}
@@ -73,6 +74,7 @@ export default class Signin extends Component {
                 <Menu.Menu position='right'>
                     <Button secondary icon='signup' content='SIGN UP' href='/signup' />
                     <Button secondary icon='sign-in' content='SIGN IN' href='/' />
+                    <Button secondary icon='google' content='G SIGN UP' href='/google'/>
                 </Menu.Menu>
             </Menu>  
             <Container relaxed='very' stackable>
@@ -86,7 +88,6 @@ export default class Signin extends Component {
             	</Segment>
             </Container>
             </Container>
-
 		)
 	}
 }

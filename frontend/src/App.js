@@ -8,6 +8,7 @@ import Signin from './components/signin';
 import Home from './components/home';
 import Profiles from './components/profiles';
 import NotFound from './components/notfound';
+import Glogin from './components/login';
 //import Index from './components/index';
 
 class App extends Component{
@@ -17,6 +18,7 @@ class App extends Component{
         <Switch>   
         	<Route exact path='/signup' component={Authenticate} />
         	<Route exact path='/' component={Signin} />
+        	<Route exact path='/google' component={Glogin} />
         	<Route path='/home' component={Home} />
         	<Route path='/users/:id' component={Profiles} />
         	<Route component={NotFound} />

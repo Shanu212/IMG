@@ -74,8 +74,8 @@ export default class Authenticate extends Component {
             <Menu>
                 <Menu.Menu position='right'>
                     <Button secondary icon='signup' content='SIGN UP' href='/signup' />
-
                     <Button secondary icon='sign-in' content='SIGN IN' href='/' />
+                    <Button secondary icon='google' content='GOOGLE LOGIN' href='/google'/>
                 </Menu.Menu>
             </Menu>    
     
@@ -88,7 +88,7 @@ export default class Authenticate extends Component {
                             <Form.Input iconPosition='left' icon='lock' label='Password' placeholder='Password' name='password' type='password' required onChange={this.handleChange} /><br/>
                             <Form.Checkbox label='Are you an admin?' name='is_staff' onChange={this.handleChange}/>
                                 <Message icon='check' success header="Success!" />
-                                <Message icon='warning sign' error header="Action Forbidden" list={errormsg}/>
+                                <Message icon='warning sign' error header="Action Forbidden!" list={errormsg}/>
                             <Form.Button secondary type='submit' primary content='Sign up'/>
                     </Form>     
                 </Container>

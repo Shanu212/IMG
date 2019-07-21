@@ -19,13 +19,22 @@ export default class MeetList extends Component {
 		}
 		this.handleClick = this.handleClick.bind(this);
         this.handleComment = this.handleComment.bind(this);
-        this.UpdateMeetings = this.UpdateMeetings.bind(this);
         this.UpdateComments = this.UpdateComments.bind(this);
 	}
 
 	componentDidMount(){
-		this.UpdateMeetings();
+		var {user} = this.props
 		this.UpdateComments();
+
+		RefreshedToken(user.refresh).then(response => {
+			this.setState({access: response.data.access})
+			service.getMeet(response.data.access)
+			.then(response => {
+				this.setState({meetings: response})
+			})
+			.catch(error => {console.log(error)})
+		})
+		.catch(error => console.log(error))
 
 		var websocket = new WebSocket("ws://localhost:8000/ws/comment/")
 
@@ -41,20 +50,6 @@ export default class MeetList extends Component {
 		websocket.onclose = (event) => {console.log('closed')}
 		websocket.onerror = (event) => {console.log('error')}
 		this.setState({websocket: websocket})
-	}
-
-
-	UpdateMeetings(){
-		var {user} = this.props
-		RefreshedToken(user.refresh).then(response => {
-			this.setState({access: response.data.access})
-			service.getMeet(response.data.access)
-			.then(response => {
-				this.setState({meetings: response})
-			})
-			.catch(error => {console.log(error)})
-		})
-		.catch(error => console.log(error))
 	}
 
 	UpdateComments(){
@@ -88,16 +83,15 @@ export default class MeetList extends Component {
 			'comment': text,
 			'user': this.props.user.id
 		}
-		this.registerComment(comment)
+		this.addComment(comment)
 		.then(data => {
 			var { websocket } = this.state
 			websocket.send(JSON.stringify(data))
-			console.log("handleComment")
 		})
 		.catch(error => {console.log(error)})
 	}
 
-	registerComment(comment){
+	addComment(comment){
 		return Axios.post("http://localhost:8000/api/comments/", comment)
 		.then(response => response.data)
 		.catch(error => { console.log(error) })
@@ -121,7 +115,8 @@ export default class MeetList extends Component {
 
 	render(){
 		console.log(this.state)
-		var meetfeed = (meeting) => <Feed size='small'>
+		var meetfeed = (meeting) => <Segment>
+									<Feed size='small'>
 										<Feed.Event>
                                         <Feed.Label image={'https://react.semantic-ui.com/images/avatar/small/matt.jpg'} />
                                         <Feed.Content>
@@ -134,6 +129,7 @@ export default class MeetList extends Component {
                                         </Feed.Content>
                                         </Feed.Event>
                                      </Feed>
+                                     </Segment>
 
 		var AccordionItem = (meeting) => {
 									var { meeting_id } = meeting
