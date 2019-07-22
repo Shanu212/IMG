@@ -22,12 +22,12 @@ export default class MeetList extends Component {
         this.UpdateComments = this.UpdateComments.bind(this);
 	}
 
-	componentDidMount(){
+	async componentDidMount(){
 		var {user} = this.props
 		this.UpdateComments();
+		this.setState({access: user.refresh})
 
 		RefreshedToken(user.refresh).then(response => {
-			this.setState({access: response.data.access})
 			service.getMeet(response.data.access)
 			.then(response => {
 				this.setState({meetings: response})
@@ -97,17 +97,36 @@ export default class MeetList extends Component {
 		.catch(error => { console.log(error) })
 	}
 
+	renderButton(created_by){
+        if(this.props.user.username == created_by){
+            return (
+                <Container>
+                <Button size='mini' secondary name='delete' floated='right' onClick={this.deleteMeet}>
+                    Delete
+                </Button>   
+                <Button size='mini' secondary name='update' floated='right' onClick={this.updMeet}>
+                    Update
+                </Button>
+                </Container>
+            );
+        } else {
+            return (
+            	""
+            );
+        }
+    }
+
 	renderbutton(created_by, created_on, venue){
 		if(this.props.user.username==created_by){
 			return (
 				<Feed.Extra text>
-				 	{"YOU created a meeting on " + created_on.slice(5, 10) + " at " + created_on.slice(11, 19)+ "."}
+				 	{"YOU created a meeting to be held at "+ venue + " on " + created_on.slice(8, 10)+ '/' + created_on.slice(5,7)  + " at " + created_on.slice(11, 16)+ "."}
 				 </Feed.Extra>
       		);
     	} else {
       		return (
       			<Feed.Extra text>
-        	   	{created_by.toUpperCase() + " has invited you for a meeting at " + venue  + " on " + created_on.slice(5, 10) + " at " + created_on.slice(11, 19)+ "."}
+        	   	{created_by.toUpperCase() + " has invited you for a meeting at " + venue  + " on " + created_on.slice(8, 10)+ '/' + created_on.slice(5,7) + " at " + created_on.slice(11, 16)+ "."}
         	   	</Feed.Extra>
       		);
     	}
@@ -120,7 +139,7 @@ export default class MeetList extends Component {
 										<Feed.Event>
                                         <Feed.Label image={'https://react.semantic-ui.com/images/avatar/small/matt.jpg'} />
                                         <Feed.Content>
-                                            <Feed.Date content={meeting.created_on.slice(5, 10) + "-" + meeting.created_on.slice(0, 4) + " at " + meeting.created_on.slice(11, 16) + "."} />
+                                            <Feed.Date content={meeting.created_on.slice(8,10) + "/" + meeting.created_on.slice(5,7) + "/" + meeting.created_on.slice(0, 4) + " at " + meeting.created_on.slice(11, 16)} />
                                             <Feed.Summary content={meeting.purpose.toUpperCase()} />
 
                                         	<Feed.Extra text>

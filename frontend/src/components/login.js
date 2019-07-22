@@ -3,7 +3,7 @@ import { Menu, Segment, Container, Form, Message, List, Button, Divider } from '
 import GoogleLogin from 'react-google-login'
 import Axios from 'axios';
 import { Redirect } from 'react-router-dom';
-import Service from './indexService';
+import Service from '../indexService';
 
 const service = new Service();
 

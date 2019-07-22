@@ -8,7 +8,8 @@ from rest_framework import renderers
 
 meeting_list = MeetingViewSet.as_view({
     'get': 'list',
-    'post': 'create'
+    'post': 'create',
+    'delete': 'destroy'
 })
 meeting_detail = MeetingViewSet.as_view({
     'get': 'retrieve',

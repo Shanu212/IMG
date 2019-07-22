@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Menu, Segment, Container, Form, Message, List, Button, Divider } from 'semantic-ui-react';
-import Service from './indexService';
+import Service from '../indexService';
 const service = new Service();
 
 export default class Authenticate extends Component {

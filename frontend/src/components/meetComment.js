@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import Service from './indexService'
+import Service from '../indexService'
 import {Comment, Form, Button, Header, Container} from 'semantic-ui-react'
 import RefreshedToken from './rtoken';
 
@@ -14,6 +14,7 @@ export default class FeedComment extends Component {
 		}
 		this.handleChange = this.handleChange.bind(this)
 		this.onComment = this.onComment.bind(this)
+        this.deleteMeet = this.deleteMeet.bind(this)
 	}
 
 	handleChange = (event, {value}) => {
@@ -24,17 +25,13 @@ export default class FeedComment extends Component {
 		this.props.onComment(this.state.comment, this.props.meeting_id)
 	}
 
-    componentDidMount(){
-        console.log(this.props.comments)
-        console.log(this.props.usern.refresh)
-    }
-
     deleteMeet(){
-        RefreshedToken(this.props.usern.refresh)
+        RefreshedToken(this.props.access)
         .then(response => {
-            service.delMeet(this.props.access, this.props.meeting_id)
+            service.delMeet(response.data.access, this.props.meeting_id)
             .then(response => {
                 console.log(response)
+                window.location.reload()
             })
             .catch(error => {
                 console.log(error)
@@ -86,7 +83,7 @@ export default class FeedComment extends Component {
                         <Comment.Content>
                             <Comment.Author>{comment.username}</Comment.Author>
                             <Comment.Metadata>
-                            <div>{comment.time.slice(0, 10)} at {comment.time.slice(11, 19)}</div>
+                            <div>{comment.time.slice(8,10)}-{comment.time.slice(5,7)}-{comment.time.slice(0,4)}  at {comment.time.slice(11, 19)}</div>
                             </Comment.Metadata>
                             <Comment.Text>{comment.comment}</Comment.Text>
                         </Comment.Content>

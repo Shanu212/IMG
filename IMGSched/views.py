@@ -17,7 +17,7 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
     serializer_class = MeetingSerializer
-    permission_classes = (IsAuthenticated, IsOwnerOrReadOnly)
+    permission_classes = (IsAuthenticated, )
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
@@ -27,6 +27,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         queryset = self.queryset
         user = self.request.user.username
+        staff =  self.request.user.is_staff
         query_set = queryset.filter(participants__username=user)
         return query_set
 
