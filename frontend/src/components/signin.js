@@ -68,13 +68,13 @@ export default class Signin extends Component {
 
 	render(){   
 		return(
-			<Container>
+			<div>
 			{this.shouldRedirect()}
-            <Menu>
+            <Menu size='large'>
                 <Menu.Menu position='right'>
-                    <Button secondary icon='signup' content='SIGN UP' href='/signup' />
-                    <Button secondary icon='sign-in' content='SIGN IN' href='/' />
-                    <Button secondary icon='google' content='G SIGN UP' href='/google'/>
+                    <Button basic color='blue' icon='signup' content='SIGN UP' href='/signup' />
+                    <Button basic color='blue' icon='sign-in' content='SIGN IN' href='/' />
+                    <Button basic color='blue' icon='google' content='G SIGN UP' href='/google'/>
                 </Menu.Menu>
             </Menu>  
             <Container relaxed='very' stackable>
@@ -83,11 +83,11 @@ export default class Signin extends Component {
 	                	<Form.Input name='username' icon='user' iconPosition='left' label='Username' placeholder='Username' onChange={this.handleChange}/>
     	            	<Form.Input name='password' icon='lock' iconPosition='left' label='Password' placeholder='Password' type='password' onChange={this.handleChange}/>
 
-                		<Button secondary content='Login' type='submit'/>
+                		<Button size='large' basic color='blue' content='Login' type='submit'/>
             		</Form>
             	</Segment>
             </Container>
-            </Container>
+            </div>
 		)
 	}
 }

@@ -64,26 +64,23 @@ export default class Signin extends Component {
         }
 
 		return(
-			<Container>
-            <Menu>
+			<div>
+            <Menu size='large'>
                 <Menu.Menu position='right'>
-                    <Button secondary icon='signup' content='SIGN UP' href='/signup' />
-                    <Button secondary icon='sign-in' content='SIGN IN' href='/' />
-                    <Button secondary icon='google' content='GOOGLE LOGIN' href='/google'/>
+                    <Button basic color='blue' icon='signup' content='SIGN UP' href='/signup' />
+                    <Button basic color='blue' icon='sign-in' content='SIGN IN' href='/' />
+                    <Button basic color='blue' icon='google' content='G SIGN UP' href='/google'/>
                 </Menu.Menu>
-            </Menu>  
+            </Menu>
             <Container textAlign='center'>
-                <Segment>
                 <GoogleLogin
                     clientId="528296198821-eb41mvpj9qqu0rgipsplv0tifivtn002.apps.googleusercontent.com" //CLIENTID NOT CREATED YET
                     buttonText="LOGIN WITH GOOGLE"
                     onSuccess={responseGoogle}
                     onFailure={responseGoogle}
                 />
-
-                </Segment>
             </Container>
-            </Container>
+            </div>
 		)
 	}
 }

@@ -43,17 +43,14 @@ export default class FeedComment extends Component {
     }
 
     renderbutton(){
-        if(this.props.usern.username == this.props.creatern){
+        if((this.props.usern.username == this.props.creatern) || this.props.usern.is_staff){
             return (
                 <Container>
                 <Form.TextArea onChange={this.handleChange}/>
-                    <Button content='Add Reply' labelPosition='left' icon='edit' primary size='mini' onClick={this.onComment}/>
+                    <Button content='Add Reply' labelPosition='left' icon='edit' basic color='blue' size='small' onClick={this.onComment}/>
 
-                <Button size='mini' secondary name='delete' floated='right' onClick={this.deleteMeet}>
-                    Delete
-                </Button>   
-                <Button size='mini' secondary name='update' floated='right' onClick={this.updMeet}>
-                    Update
+                <Button size='small' basic color='blue' name='delete' onClick={this.deleteMeet}>
+                    Delete Meet
                 </Button>
                 </Container>
             );
@@ -61,7 +58,7 @@ export default class FeedComment extends Component {
             return (
             <Container>
                 <Form.TextArea onChange={this.handleChange}/>
-                    <Button content='Add Reply' labelPosition='left' icon='edit' primary size='mini' onClick={this.onComment}/>  
+                    <Button content='Add Reply' labelPosition='left' icon='edit' basic color='blue' size='small' onClick={this.onComment}/>  
             </Container>
             );
         }

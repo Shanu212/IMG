@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Menu, Segment, Container, Form, Message, List, Button, Divider } from 'semantic-ui-react';
+import { Image, Menu, Segment, Container, Form, Message, List, Button, Divider } from 'semantic-ui-react';
 import Service from '../indexService';
 const service = new Service();
 
@@ -71,28 +71,28 @@ export default class Authenticate extends Component {
 
         return (
             <div>
-            <Menu>
+            <Menu size='large'>
                 <Menu.Menu position='right'>
-                    <Button secondary icon='signup' content='SIGN UP' href='/signup' />
-                    <Button secondary icon='sign-in' content='SIGN IN' href='/' />
-                    <Button secondary icon='google' content='GOOGLE LOGIN' href='/google'/>
+                    <Button basic color='blue' icon='signup' content='SIGN UP' href='/signup' />
+                    <Button basic color='blue' icon='sign-in' content='SIGN IN' href='/' />
+                    <Button basic color='blue' icon='google' content='G SIGN UP' href='/google'/>
                 </Menu.Menu>
             </Menu>    
     
-            <Segment placeholder>
-                <Container relaxed='very' stackable>    
+                <Container relaxed='very' stackable>
+                    <Segment placeholder size='mini'> 
                     <Form onSubmit={this.handleSubmit} error={error} success={success}>
                             <Form.Input iconPosition='left' icon='user' label='Username' placeholder='Username' name='username' required onChange={this.handleChange} /><br/>
-                            <Form.Input iconPosition='left' icon='user outline' label='Full Name' name='first_name' placeholder='Firstname' required onChange={this.handleChange} /><br/>  
+                            <Form.Input iconPosition='left' icon='user outline' label='Full Name' name='first_name' placeholder='First Name' required onChange={this.handleChange} /><br/>  
                             <Form.Input iconPosition='left' icon='mail' label='Email' placeholder='Email' name='email' type='email' required onChange={this.handleChange} /><br/>    
                             <Form.Input iconPosition='left' icon='lock' label='Password' placeholder='Password' name='password' type='password' required onChange={this.handleChange} /><br/>
                             <Form.Checkbox label='Are you an admin?' name='is_staff' onChange={this.handleChange}/>
                                 <Message icon='check' success header="Success!" />
                                 <Message icon='warning sign' error header="Action Forbidden!" list={errormsg}/>
-                            <Form.Button secondary type='submit' primary content='Sign up'/>
-                    </Form>     
+                            <Form.Button size='large' type='submit' basic color='blue' content='Sign up'/>
+                    </Form>
+                    </Segment>     
                 </Container>
-            </Segment>
             </div>
         )
     }

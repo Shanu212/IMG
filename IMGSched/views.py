@@ -7,12 +7,14 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 from IMGSched.serializers import UserSerializer, CommentSerializer, MeetingSerializer
 from IMGSched.models import Meeting, Comment
-from IMGSched.permissions import IsOwnerOrReadOnly, IsOwnerOrRead
+# from IMGSched.permissions import IsOwnerOrReadOnly, IsOwnerOrRead
+from django.contrib.auth.decorators import user_passes_test
 
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
 from rest_framework import permissions, generics, viewsets
 from rest_framework.permissions import IsAuthenticated, AllowAny
+
 # Create your views here.
 class MeetingViewSet(viewsets.ModelViewSet):
     queryset = Meeting.objects.all()
@@ -21,14 +23,22 @@ class MeetingViewSet(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
-        serializer.save(created_on=timezone.now()) 
+        serializer.save(created_on=timezone.now())
 
+    # def staff(func):
+    #     def inner(self):
+    #         if self.request.user.is_staff:
+    #             return self.queryset
+    #         return func(self)
+    #     return inner        
+
+    # @staff
     @action(detail=True, methods=['get'])
     def get_queryset(self):
         queryset = self.queryset
         user = self.request.user.username
-        staff =  self.request.user.is_staff
         query_set = queryset.filter(participants__username=user)
+        #print(query_set)
         return query_set
 
 class CommentViewSet(viewsets.ModelViewSet):
@@ -52,14 +62,12 @@ class UserViewSet(viewsets.ModelViewSet):
     def meetings(self, request, pk=None):
         queryset = User.objects.get(pk=pk).meetings.all()
         serializer = MeetingSerializer(queryset, many=True)
-        print(queryset)
         return Response(serializer.data)
 
     def get_object(self):
         queryset = self.get_queryset()
         queryset = self.filter_queryset(queryset)
         filter = {}
-        print(self.kwargs['pk'].isnumeric())
         if self.kwargs['pk'].isnumeric():
             filter['pk'] = self.kwargs['pk']
         else:

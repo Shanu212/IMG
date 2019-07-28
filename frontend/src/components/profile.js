@@ -14,18 +14,17 @@ export default class Profiles extends Component {
 	renderButton() {
     if(this.props.user.is_staff) {
       return (
-      	<Container>
       	  <Container>
+      	    <Icon name='user' /> 
             ADMIN
           </Container>
-          <Container>
-       		<a href="http://localhost:8000/admin/">Go to admin Page</a>  
-          </Container>
-        </Container>
       );
     } else {
       return (
-          ""
+        <Container>
+            <Icon name='user' /> 
+            NORMAL USER
+          </Container>  
       );
     }
 }
@@ -45,7 +44,6 @@ export default class Profiles extends Component {
         			 {this.renderButton()}
     			</Card.Content>
   			</Card>
-
 		);
 	}
 }	

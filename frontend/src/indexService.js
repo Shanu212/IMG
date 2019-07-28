@@ -47,7 +47,7 @@ export default class Service{
 	}
 
 	createMeet(meeting, access){
-		var { purpose, venue, participants, meeting_on } = meeting
+		var { purpose, venue, participants, meeting_on, meet_type } = meeting
 		const url =`http://localhost:8000/api/meetings/`;
 		return axios.post(url, 
 			{
@@ -55,6 +55,7 @@ export default class Service{
 				'meeting_on': meeting_on,
 				'venue': venue,
 				'participants': participants,
+				'meet_type': meet_type,
 			},
 			{headers: {
 					'Authorization': 'Bearer' + " " + access

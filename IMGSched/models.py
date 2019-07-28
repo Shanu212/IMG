@@ -9,6 +9,7 @@ class Meeting(models.Model):
 	purpose = models.CharField(max_length=50)
 	meeting_on = models.DateTimeField()
 	venue = models.CharField(max_length=30, default='IMG lab')
+	meet_type = models.CharField(max_length=10)
 	participants = models.ManyToManyField(User, related_name='invitedppl')
 
 	def __str__(self):

@@ -8,6 +8,10 @@ import {
 } from 'semantic-ui-calendar-react';
 
 var service = new Service();
+const options = [
+	{ key: 'General', text: 'General', value: 'General' },
+  	{ key: 'Private', text: 'Private', value: 'Private' },
+]
 
 export default class MeetAdd extends Component{
 	constructor(props){
@@ -18,7 +22,10 @@ export default class MeetAdd extends Component{
 			purpose: '',
 			meeting_on: '',
 			venue: '',
+			meet_type: '',
 			soptions: [],
+			sop: [],
+			allOpt: '',
 			participants: [],
 			error: false,
 			success: false
@@ -43,8 +50,12 @@ export default class MeetAdd extends Component{
         .then(response => {
             service.listUser(response.data.access)
             .then(response => {
-            	console.log(response)
-                this.setState({soptions: response.map(user => {return {key: user.id, value: user.id, text: user.username}})})
+                this.setState({soptions: response.map(user => {
+                		return {key: user.id, value: user.id, text: user.username}
+                	}
+                )})
+                this.setState({sop: this.state.soptions.filter(x => x.key !== this.props.user.id)})
+                this.setState({allOpt: response.map(user => {return user.id})})
             })
             .catch(error => {
             	console.log(response)
@@ -58,21 +69,26 @@ export default class MeetAdd extends Component{
 
 	handleSubmit(event){
 		var data = {}
-		var {meeting_on, purpose, date, time, venue, participants} = this.state
+		var {meeting_on, purpose, date, time, venue, participants, meet_type, allOpt} = this.state
 		data['meeting_on'] =  date.slice(6,10) + "-" + date.slice(3,5) + "-" + date.slice(0,2) + "T" + time + ":00" + "Z"
 		data['purpose'] = purpose
 		data['venue'] = venue
-		data['created_by'] = this.props.user.id
-		data['participants'] = participants
+		data['meet_type'] = meet_type
+		if(meet_type==='Private'){
+			participants.push(this.props.user.id)
+			data['participants'] = participants
+		}
+		else{
+			data['participants'] = allOpt
+		}	
 		RefreshedToken(this.props.user.refresh)
 		.then(response => {
             service.createMeet(data, response.data.access)
             .then(response => {
-                console.log(response.data)
                 this.setState({error: false, success: true})
             })
             .catch(error => {
-                console.log(error.status)
+                console.log(error)
                 this.setState({error: true, success: false})
             })
         })
@@ -84,6 +100,7 @@ export default class MeetAdd extends Component{
 
 	render(){
 		var {error, success} = this.state
+		const enabled = (this.state.meet_type === 'Private')
 		return(
 			<Container>
 			<Segment placeholder>
@@ -115,17 +132,27 @@ export default class MeetAdd extends Component{
           			value={this.state.time}
           			iconPosition="left"
           			onChange={this.handleChangeDate}
-        		/><br/>
+        		/>
+        		<Form.Select 
+        			required
+        			name='meet_type'
+        			onChange={this.handleChange}
+        			label='Meeting type' 
+        			options={options} 
+        			placeholder='Type'
+        		/>
         		<Dropdown multiple search clearable selection
+        			label='participants'
         			placeholder='participants'
-        			options={this.state.soptions}
+        			disabled={!enabled}
+        			options={this.state.sop}
         			onChange={this.adropdown}
         		/><br />
         			<Message success header="Success!" />
         			<Message error header="Failed!" content="Make sure date-time is in correct format and you are logged in..." />
-        		<Button type="submit" secondary>Create Meet</Button>
-        	</Form>	
-        	</Segment>
+        		<Button type="submit" basic color='blue'>Create Meet</Button>
+        	</Form>
+           	</Segment>
         	</Container>
 		);
 	}

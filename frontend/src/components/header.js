@@ -10,7 +10,7 @@ export default class Header extends Component {
   render() {
     const { activeItem } = this.props
     return (
-        <Menu pointing secondary>
+        <Menu size='big' pointing secondary>
             <Menu.Item icon='home' name='home' active={activeItem === 'home'} onClick={this.props.onClick} />
             <Menu.Item icon='plus' name='create' active={activeItem === 'create'} onClick={this.props.onClick} />
             <Menu.Menu position='right'>

@@ -20,22 +20,13 @@ export default class MeetList extends Component {
 		this.handleClick = this.handleClick.bind(this);
         this.handleComment = this.handleComment.bind(this);
         this.UpdateComments = this.UpdateComments.bind(this);
+        this.MeetUpdate = this.MeetUpdate.bind(this)
 	}
 
 	async componentDidMount(){
 		var {user} = this.props
 		this.UpdateComments();
-		this.setState({access: user.refresh})
-
-		RefreshedToken(user.refresh).then(response => {
-			service.getMeet(response.data.access)
-			.then(response => {
-				this.setState({meetings: response})
-			})
-			.catch(error => {console.log(error)})
-		})
-		.catch(error => console.log(error))
-
+		this.MeetUpdate();
 		var websocket = new WebSocket("ws://localhost:8000/ws/comment/")
 
 		websocket.onmessage = (event) => {
@@ -50,6 +41,21 @@ export default class MeetList extends Component {
 		websocket.onclose = (event) => {console.log('closed')}
 		websocket.onerror = (event) => {console.log('error')}
 		this.setState({websocket: websocket})
+	}
+
+	MeetUpdate(){
+		var {user} = this.props
+		this.setState({access: user.refresh})
+
+		RefreshedToken(user.refresh).then(response => {
+			service.getMeet(response.data.access)
+			.then(response => {
+				this.setState({meetings: response})
+			})
+			.catch(error => {console.log(error)})
+		})
+		.catch(error => console.log(error))
+
 	}
 
 	UpdateComments(){

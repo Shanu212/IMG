@@ -33,4 +33,4 @@ class MeetingSerializer(serializers.ModelSerializer):
 	class Meta:
 		model = Meeting
 		read_only_fields = ('created_by', 'created_on')
-		fields = ('meeting_id','created_by', 'created_on', 'purpose', 'meeting_on', 'venue', 'participants', 'comments')
+		fields = ('meeting_id','created_by', 'created_on', 'purpose', 'meeting_on', 'venue', 'participants', 'meet_type', 'comments')
