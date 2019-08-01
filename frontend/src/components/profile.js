@@ -1,7 +1,5 @@
 import React, {Component} from 'react'
 import { Container, Card, Image, Icon } from 'semantic-ui-react';
-import RefreshedToken from './rtoken'
-import Axios from 'axios';
 
 export default class Profiles extends Component {
 	constructor(props){
@@ -15,7 +13,7 @@ export default class Profiles extends Component {
     if(this.props.user.is_staff) {
       return (
       	  <Container>
-      	    <Icon name='user' /> 
+      	   	<Icon name='user' /> 
             ADMIN
           </Container>
       );

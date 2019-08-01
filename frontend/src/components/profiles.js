@@ -1,9 +1,4 @@
 import React, {Component} from 'react'
-import Service from '../Index-service'
-import { Card, Image, Icon } from 'semantic-ui-react';
-import RefreshedToken from './rtoken'
-import FeedComment from './meetComment' 
-import Axios from 'axios';
 
 export default class Profiles extends Component {
 	constructor(props){
@@ -13,6 +8,10 @@ export default class Profiles extends Component {
       match: this.props.match.params.id
 		}
 	}
+
+  componentDidMount(){
+
+  }
 
 	render(){
 		return(

@@ -16,6 +16,11 @@ export default class Service{
         .then(response => response.data);
 	}
 
+	addComment(comment){
+		return axios.post("http://localhost:8000/api/comments/", comment)
+		.then(response => response.data);
+	}
+
 	listUser(access){
 		const url = `http://localhost:8000/api/users/`
 		return axios.get(url, {
@@ -46,20 +51,31 @@ export default class Service{
 		.then(response => response.data);
 	}
 
+	userByID(access){
+		const url = `http://localhost:8000/api/users/`;
+		return axios.get(url, {
+			headers: {
+				'Authorization': 'Bearer'+ " " + access
+			}
+		})
+		.then(response => response.data);
+	}
+
 	createMeet(meeting, access){
-		var { purpose, venue, participants, meeting_on } = meeting
+		var { purpose, venue, participants, meeting_on, meet_type } = meeting
 		const url =`http://localhost:8000/api/meetings/`;
 		return axios.post(url, 
+			{headers: {
+					'Authorization': 'Bearer' + " " + access
+				}
+			},
 			{
 				'purpose': purpose,
 				'meeting_on': meeting_on,
 				'venue': venue,
 				'participants': participants,
+				'meet_type': meet_type,
 			},
-			{headers: {
-					'Authorization': 'Bearer' + " " + access
-				}
-			}
 		)
 		.then(response => response.data);
 	}
@@ -68,7 +84,7 @@ export default class Service{
 		const url = `http://localhost:8000/api/meetings/${meeting.meeting_id}`;
 		return axios.get(url, {
 			headers: {
-				'Authorization': 'Bearer ' + access
+				'Authorization': 'Bearer'+ " " + access
 			}
 		})
 		.then(response => response.data);

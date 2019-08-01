@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
-import { Menu, Segment, Container, Form, Message, List, Button, Divider } from 'semantic-ui-react';
-import GoogleLogin from 'react-google-login'
+import { Menu, Segment, Container, Form, Button} from 'semantic-ui-react';
 import Axios from 'axios';
 import { Redirect } from 'react-router-dom';
 
@@ -18,7 +17,6 @@ export default class Signin extends Component {
 
 
     handleSubmit(e){
-
         Axios.post("http://localhost:8000/api/token/", {
             username: this.state.user.username,
             password: this.state.user.password,
@@ -29,21 +27,21 @@ export default class Signin extends Component {
             user['refresh'] = response.data.refresh
             Axios.get(`http://localhost:8000/api/users/${this.state.user.username}`, {
                 headers: {
-                    "Authorization": "Bearer " + response.data.access
+                    "Authorization": "Bearer" + " " + response.data.access
                 }
             })
             .then(response => {
                 user = {...response.data, ...user}
                 this.setState({redirect: !this.state.redirect, user: user})
             })
-            .catch(error => {
+            .catch(err => {
                 alert("Wrong credentials!!")
-                console.error("Wrong credentials!!", error)
+                console.error("Wrong credentials!!", err)
             })
         })
-        .catch(error => {
-            console.error(error)
+        .catch(err => {
             alert("Wrong credentials!!")
+            console.error(err)
         })
         
     }
@@ -57,19 +55,18 @@ export default class Signin extends Component {
     }
     
 
-    shouldRedirect(){
-        var { redirect, user } = this.state
-        if(redirect === true)
+    Redirect(){
+        if(this.state.redirect === true)
             return <Redirect to={{
                        pathname: "/home",
-                       state: user,
+                       state: this.state.user,
                    }} />
      }              
 
 	render(){   
 		return(
 			<div>
-			{this.shouldRedirect()}
+			{this.Redirect()}
             <Menu size='large'>
                 <Menu.Menu position='right'>
                     <Button basic color='blue' icon='signup' content='SIGN UP' href='/signup' />
@@ -77,11 +74,26 @@ export default class Signin extends Component {
                     <Button basic color='blue' icon='google' content='G SIGN UP' href='/google'/>
                 </Menu.Menu>
             </Menu>  
-            <Container relaxed='very' stackable>
+            <Container>
             	<Segment placeholder>
             		<Form onSubmit={this.handleSubmit}>
-	                	<Form.Input name='username' icon='user' iconPosition='left' label='Username' placeholder='Username' onChange={this.handleChange}/>
-    	            	<Form.Input name='password' icon='lock' iconPosition='left' label='Password' placeholder='Password' type='password' onChange={this.handleChange}/>
+	                	<Form.Input
+                            name='username'
+                            icon='user' 
+                            iconPosition='left' 
+                            label='Username' 
+                            placeholder='Username' 
+                            onChange={this.handleChange}
+                        />
+    	            	<Form.Input 
+                            name='password' 
+                            icon='lock' 
+                            iconPosition='left' 
+                            label='Password' 
+                            placeholder='Password' 
+                            type='password' 
+                            onChange={this.handleChange}
+                        />
 
                 		<Button size='large' basic color='blue' content='Login' type='submit'/>
             		</Form>

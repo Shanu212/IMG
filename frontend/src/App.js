@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Header from './components/header';
 
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 //import {Button} from 'semantic-ui-react';

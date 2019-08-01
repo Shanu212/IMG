@@ -4,11 +4,12 @@ from django.shortcuts import get_object_or_404
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import user_passes_test
+
 
 from IMGSched.serializers import UserSerializer, CommentSerializer, MeetingSerializer
 from IMGSched.models import Meeting, Comment
 # from IMGSched.permissions import IsOwnerOrReadOnly, IsOwnerOrRead
-from django.contrib.auth.decorators import user_passes_test
 
 from rest_framework.decorators import action, api_view
 from rest_framework.response import Response
@@ -25,21 +26,11 @@ class MeetingViewSet(viewsets.ModelViewSet):
         serializer.save(created_by=self.request.user)
         serializer.save(created_on=timezone.now())
 
-    # def staff(func):
-    #     def inner(self):
-    #         if self.request.user.is_staff:
-    #             return self.queryset
-    #         return func(self)
-    #     return inner        
-
-    # @staff
     @action(detail=True, methods=['get'])
     def get_queryset(self):
-        queryset = self.queryset
-        user = self.request.user.username
-        query_set = queryset.filter(participants__username=user)
-        #print(query_set)
-        return query_set
+        if(self.request.user.is_staff):
+            return Meeting.objects.all()
+        return Meeting.objects.all(participants__username=user)
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()
@@ -50,8 +41,7 @@ class CommentViewSet(viewsets.ModelViewSet):
 
     def retrieve(self, request, pk=None):
         queryset = Comment.objects.filter(meeting_id=pk)
-        serializer = CommentSerializer(queryset, many=True)
-        return Response(serializer.data)    
+        return queryset    
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
@@ -61,8 +51,7 @@ class UserViewSet(viewsets.ModelViewSet):
     @action(detail=True)
     def meetings(self, request, pk=None):
         queryset = User.objects.get(pk=pk).meetings.all()
-        serializer = MeetingSerializer(queryset, many=True)
-        return Response(serializer.data)
+        return queryset
 
     def get_object(self):
         queryset = self.get_queryset()
@@ -78,4 +67,4 @@ class UserViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         if self.action == 'create':
             return [AllowAny(), ]
-        return super(UserViewSet, self).get_permissions()    
+        return super(UserViewSet, self).get_permissions()

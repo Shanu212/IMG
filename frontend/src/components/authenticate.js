@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { Image, Menu, Segment, Container, Form, Message, List, Button, Divider } from 'semantic-ui-react';
-import Service from '../indexService';
+import {Menu, Segment, Container, Form, Message, Button} from 'semantic-ui-react';
+import Service from './indexService';
 const service = new Service();
 
 export default class Authenticate extends Component {
@@ -31,7 +31,7 @@ export default class Authenticate extends Component {
 
     handleChange = (event, props) =>{
         var { value, name, checked } = props
-        if(checked == undefined)
+        if(checked === undefined)
             this.setState({[name]: value})
         else
             this.setState({[name]: checked})
@@ -67,8 +67,6 @@ export default class Authenticate extends Component {
 
 
     render() {
-        var { error, success, errormsg } = this.state
-
         return (
             <div>
             <Menu size='large'>
@@ -81,14 +79,52 @@ export default class Authenticate extends Component {
     
                 <Container relaxed='very' stackable>
                     <Segment placeholder size='mini'> 
-                    <Form onSubmit={this.handleSubmit} error={error} success={success}>
-                            <Form.Input iconPosition='left' icon='user' label='Username' placeholder='Username' name='username' required onChange={this.handleChange} /><br/>
-                            <Form.Input iconPosition='left' icon='user outline' label='Full Name' name='first_name' placeholder='First Name' required onChange={this.handleChange} /><br/>  
-                            <Form.Input iconPosition='left' icon='mail' label='Email' placeholder='Email' name='email' type='email' required onChange={this.handleChange} /><br/>    
-                            <Form.Input iconPosition='left' icon='lock' label='Password' placeholder='Password' name='password' type='password' required onChange={this.handleChange} /><br/>
-                            <Form.Checkbox label='Are you an admin?' name='is_staff' onChange={this.handleChange}/>
+                    <Form onSubmit={this.handleSubmit} error={this.state.error} success={this.state.success}>
+                            <Form.Input 
+                                iconPosition='left' 
+                                icon='user' 
+                                label='Username' 
+                                placeholder='Username' 
+                                name='username' 
+                                required 
+                                onChange={this.handleChange} 
+                            /><br/>
+                            <Form.Input 
+                                iconPosition='left' 
+                                icon='user outline' 
+                                label='Full Name'
+                                name='first_name' 
+                                placeholder='First Name' 
+                                required 
+                                onChange={this.handleChange} 
+                            /><br/>  
+                            <Form.Input 
+                                iconPosition='left' 
+                                icon='mail' 
+                                label='Email' 
+                                placeholder='Email' 
+                                name='email' 
+                                type='email' 
+                                required 
+                                onChange={this.handleChange} 
+                            /><br/>    
+                            <Form.Input 
+                                iconPosition='left' 
+                                icon='lock' 
+                                label='Password' 
+                                placeholder='Password' 
+                                name='password' 
+                                type='password' 
+                                required 
+                                onChange={this.handleChange} 
+                            /><br/>
+                            <Form.Checkbox 
+                                label='Are you an admin?' 
+                                name='is_staff' 
+                                onChange={this.handleChange}
+                            />
                                 <Message icon='check' success header="Success!" />
-                                <Message icon='warning sign' error header="Action Forbidden!" list={errormsg}/>
+                                <Message icon='warning sign' error header="Action Forbidden!" list={this.state.errormsg}/>
                             <Form.Button size='large' type='submit' basic color='blue' content='Sign up'/>
                     </Form>
                     </Segment>     

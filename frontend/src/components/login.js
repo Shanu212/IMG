@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
-import { Menu, Segment, Container, Form, Message, List, Button, Divider } from 'semantic-ui-react';
+import { Menu, Container, Message, Button } from 'semantic-ui-react';
 import GoogleLogin from 'react-google-login'
-import Axios from 'axios';
-import { Redirect } from 'react-router-dom';
-import Service from '../indexService';
+import Service from './indexService';
 
 const service = new Service();
 
@@ -29,7 +27,6 @@ export default class Signin extends Component {
         data['is_staff'] = 'false'
         service.createUser(data)
         .then(response => {
-            console.log(response)
             this.setState({success: true})
         })
         .catch(error => {

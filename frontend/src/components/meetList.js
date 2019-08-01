@@ -19,46 +19,10 @@ export default class MeetList extends Component {
 		}
 		this.handleClick = this.handleClick.bind(this);
         this.handleComment = this.handleComment.bind(this);
-        this.UpdateComments = this.UpdateComments.bind(this);
-        this.MeetUpdate = this.MeetUpdate.bind(this)
 	}
 
 	async componentDidMount(){
 		var {user} = this.props
-		this.UpdateComments();
-		this.MeetUpdate();
-		var websocket = new WebSocket("ws://localhost:8000/ws/comment/")
-
-		websocket.onmessage = (event) => {
-			var comment = JSON.parse(event.data).comment
-			var {comments} = this.state
-			if(comments[comment.meet] == undefined)
-				comments[comment.meet] = []
-			comments[comment.meet].push(comment)
-			this.setState({comments: comments})
-		}
-		websocket.onopen = (event) => {console.log('opened')}
-		websocket.onclose = (event) => {console.log('closed')}
-		websocket.onerror = (event) => {console.log('error')}
-		this.setState({websocket: websocket})
-	}
-
-	MeetUpdate(){
-		var {user} = this.props
-		this.setState({access: user.refresh})
-
-		RefreshedToken(user.refresh).then(response => {
-			service.getMeet(response.data.access)
-			.then(response => {
-				this.setState({meetings: response})
-			})
-			.catch(error => {console.log(error)})
-		})
-		.catch(error => console.log(error))
-
-	}
-
-	UpdateComments(){
 		Axios.get(`http://localhost:8000/api/comments/`)
 		.then(response => {
 			var comments = {}
@@ -70,17 +34,44 @@ export default class MeetList extends Component {
 			this.setState({comments: comments})
 			console.log(response)
 		})
-		.catch(error => {
-			console.log(error)
+		.catch(err => {
+			console.log(err)
 		})
+		
+		this.setState({access: user.refresh})
+
+		RefreshedToken(user.refresh)
+		.then(response => {
+			service.getMeet(response.data.access)
+			.then(response => {
+				this.setState({meetings: response})
+			})
+			.catch(err => console.log(err))
+		})
+		.catch(err => console.log(err))
+
+		var websocket = new WebSocket("ws://localhost:8000/ws/comment/")
+
+		websocket.onmessage = (event) => {
+			var comment = JSON.parse(event.data).comment
+			var {comments} = this.state
+			if(comments[comment.meet] === undefined)
+				comments[comment.meet] = []
+			comments[comment.meet].push(comment)
+			this.setState({comments: comments})
+		}
+		websocket.onopen = (event) => {console.log('websocket onopen')}
+		websocket.onclose = (event) => {console.log('websocket onclose')}
+		websocket.onerr = (event) => {console.log('websocket onerr')}
+		this.setState({websocket: websocket})
 	}
 
-	handleClick(e, titleProps){
-        const { index } = titleProps
+
+	handleClick(e, id){
+        const { index } = id
         const { activeIndex } = this.state
         const newIndex = activeIndex === index ? -1 : index
-        this.setState({ activeIndex: newIndex }) 
-          
+        this.setState({ activeIndex: newIndex })         
     }
 
     handleComment(text, meeting_id){
@@ -89,100 +80,68 @@ export default class MeetList extends Component {
 			'comment': text,
 			'user': this.props.user.id
 		}
-		this.addComment(comment)
+		service.addComment(comment)
 		.then(data => {
 			var { websocket } = this.state
 			websocket.send(JSON.stringify(data))
 		})
-		.catch(error => {console.log(error)})
+		.catch(err => {console.log(err)})
 	}
-
-	addComment(comment){
-		return Axios.post("http://localhost:8000/api/comments/", comment)
-		.then(response => response.data)
-		.catch(error => { console.log(error) })
-	}
-
-	renderButton(created_by){
-        if(this.props.user.username == created_by){
-            return (
-                <Container>
-                <Button size='mini' secondary name='delete' floated='right' onClick={this.deleteMeet}>
-                    Delete
-                </Button>   
-                <Button size='mini' secondary name='update' floated='right' onClick={this.updMeet}>
-                    Update
-                </Button>
-                </Container>
-            );
-        } else {
-            return (
-            	""
-            );
-        }
-    }
 
 	renderbutton(created_by, created_on, venue){
 		if(this.props.user.username==created_by){
 			return (
 				<Feed.Extra text>
-				 	{"YOU created a meeting to be held at "+ venue + " on " + created_on.slice(8, 10)+ '/' + created_on.slice(5,7)  + " at " + created_on.slice(11, 16)+ "."}
+				 	{"You created a meeting to be held at "+ venue + " on " + created_on.slice(8, 10)+ '/' + created_on.slice(5,7)  + " at " + created_on.slice(11, 16)+ "."}
 				 </Feed.Extra>
       		);
     	} else {
       		return (
       			<Feed.Extra text>
-        	   	{created_by.toUpperCase() + " has invited you for a meeting at " + venue  + " on " + created_on.slice(8, 10)+ '/' + created_on.slice(5,7) + " at " + created_on.slice(11, 16)+ "."}
+        	   		{created_by.toUpperCase() + " has invited you for a meeting at " + venue  + " on " + created_on.slice(8, 10)+ '/' + created_on.slice(5,7) + " at " + created_on.slice(11, 16)+ "."}
         	   	</Feed.Extra>
       		);
     	}
 	}
 
-	render(){
-		console.log(this.state)
-		var meetfeed = (meeting) => <Segment>
-									<Feed size='small'>
-										<Feed.Event>
-                                        <Feed.Label image={'https://react.semantic-ui.com/images/avatar/small/matt.jpg'} />
-                                        <Feed.Content>
-                                            <Feed.Date content={meeting.created_on.slice(8,10) + "/" + meeting.created_on.slice(5,7) + "/" + meeting.created_on.slice(0, 4) + " at " + meeting.created_on.slice(11, 16)} />
-                                            <Feed.Summary content={meeting.purpose.toUpperCase()} />
-
-                                        	<Feed.Extra text>
-                                            	{this.renderbutton(meeting.created_by, meeting.meeting_on, meeting.venue)}
-                                            </Feed.Extra>
-                                        </Feed.Content>
-                                        </Feed.Event>
-                                     </Feed>
-                                     </Segment>
-
+	render(){                        
 		var AccordionItem = (meeting) => {
-									var { meeting_id } = meeting
-                                    var { activeIndex, comments, user } = this.state
-                                    if(comments[meeting_id] == undefined)
-                                        comments[meeting_id] = []
-                                    return (<Item key={meeting_id}>
-                                        <Accordion.Title active={activeIndex === meeting_id} index={meeting_id} onClick={this.handleClick}>
-                                            {meetfeed(meeting)}
-                                        </Accordion.Title>
-                                        <Accordion.Content active={activeIndex === meeting_id}>
-                                            <FeedComment comments={comments[meeting_id]} onComment={this.handleComment} meeting_id={meeting_id} access={this.state.access} usern={this.props.user} creatern={meeting.created_by}/>
-                                        </Accordion.Content>
-                                    </Item>)
-								}
+				var { meeting_id } = meeting
+                var { activeIndex, comments, user} = this.state
+                if(comments[meeting_id] == undefined)
+                    comments[meeting_id] = []
+                return (
+                    <Item key={meeting_id}>
+                    <Accordion.Title active={activeIndex === meeting_id} index={meeting_id} onClick={this.handleClick}>
+                        <Segment>
+							<Feed size='small'>
+								<Feed.Event>
+                                    <Feed.Label image={'https://react.semantic-ui.com/images/avatar/small/matt.jpg'} />
+                                    <Feed.Content>
+                                        <Feed.Date content={meeting.created_on.slice(8,10) + "/" + meeting.created_on.slice(5,7) + "/" + meeting.created_on.slice(0, 4) + " at " + meeting.created_on.slice(11, 16)} />
+                                        <Feed.Summary content={meeting.purpose.toUpperCase()} />
 
-		var panes = [{
-						render: () => <Tab.Pane>
-							<Accordion fluid styled>
-								{this.state.meetings
-									.map(meeting => AccordionItem(meeting))}
-							</Accordion>
-						</Tab.Pane>	
-				}
-		]
+                                        <Feed.Extra text>
+                                           	{this.renderbutton(meeting.created_by, meeting.meeting_on, meeting.venue)}
+                                        </Feed.Extra>
+                                    </Feed.Content>
+                                </Feed.Event>
+                            </Feed>
+                        </Segment>
+                            </Accordion.Title>
+                                <Accordion.Content active={activeIndex === meeting_id}>
+                                    <FeedComment comments={comments[meeting_id]} onComment={this.handleComment} participants={meeting.participants} meeting_id={meeting_id} access={this.state.access} usern={this.props.user} creatern={meeting.created_by}/>
+                                </Accordion.Content>
+                    </Item>
+            )}
 
 		return(
-		<Tab panes={panes} />
+		<Container>
+			<Accordion fluid styled>
+				{this.state.meetings
+					.map(meeting => AccordionItem(meeting))}
+			</Accordion>
+		</Container>	
 		);						
 	}
 

@@ -1,5 +1,7 @@
+
+
 import React, { Component } from 'react';
-import { Grid, Image, Button, Segment } from 'semantic-ui-react';
+import { Grid } from 'semantic-ui-react';
 import Header from './header'
 import { Redirect } from 'react-router-dom';
 import MeetAdd from './meetAdd';
@@ -39,12 +41,12 @@ class Home extends Component{
       return (
          <Grid divided>
             <Grid.Row>
-                <Grid.Column width={16}>
+                <Grid.Column>
                     <Header onClick={this.handleClick} activeItem={this.state.activeItem}/>
                 </Grid.Column>
             </Grid.Row>
             <Grid.Row>
-                <Grid.Column width={16}>
+                <Grid.Column>
                    {this.directPage(this.state.user)}
                 </Grid.Column>
             </Grid.Row>

@@ -26,3 +26,6 @@ class Comment(models.Model):
 
 	def __str__(self):
 		return '%d: %s' % (self.id, self.comment)
+
+	class Meta:
+		ordering = ('time', )		

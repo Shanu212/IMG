@@ -19,12 +19,6 @@ class UserSerializer(serializers.ModelSerializer):
 		fields = ('id', 'username', 'email', 'first_name', 'is_staff', 'password')
 		extra_kwargs = {'password': {'write_only': True}}
 
-	def create(self, validated_data):
-		user = super(UserSerializer, self).create(validated_data)
-		user.set_password(validated_data['password'])
-		user.save()
-		return user
-
 class MeetingSerializer(serializers.ModelSerializer):
 	created_by = serializers.ReadOnlyField(source='created_by.username')
 	created_on = serializers.ReadOnlyField()

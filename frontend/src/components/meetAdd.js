@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 import { Message, Form, Button, Dropdown, Container, Segment } from 'semantic-ui-react';
 import RefreshedToken from './rtoken';
-import Service from '../indexService';
+import Service from './indexService';
 import {
 	DateInput,
 	TimeInput,
@@ -31,12 +31,7 @@ export default class MeetAdd extends Component{
 			success: false
 		}
 		this.handleChange = this.handleChange.bind(this)
-		this.adropdown = this.adropdown.bind(this)
 		this.handleSubmit = this.handleSubmit.bind(this)
-	}
-
-	adropdown(event, {value}){
-		this.setState({participants: value})
 	}
 
 	handleChangeDate = (event, {name, value}) => {
@@ -45,32 +40,28 @@ export default class MeetAdd extends Component{
     	}
   	}
 
-  	updateUsers(){
+    componentDidMount(){
         RefreshedToken(this.props.user.refresh)
         .then(response => {
             service.listUser(response.data.access)
             .then(response => {
                 this.setState({soptions: response.map(user => {
-                		return {key: user.id, value: user.id, text: user.username}
+                		return {value: user.id, text: user.username}
                 	}
                 )})
-                this.setState({sop: this.state.soptions.filter(x => x.key !== this.props.user.id)})
+                this.setState({sop: this.state.soptions.filter(x => x.value !== this.props.user.id)})
                 this.setState({allOpt: response.map(user => {return user.id})})
             })
             .catch(error => {
-            	console.log(response)
+            	console.log(error)
             })
-        })   
-    }
-
-    componentDidMount(){
-        this.updateUsers();
+        })
     }
 
 	handleSubmit(event){
-		var data = {}
 		var {meeting_on, purpose, date, time, venue, participants, meet_type, allOpt} = this.state
-		data['meeting_on'] =  date.slice(6,10) + "-" + date.slice(3,5) + "-" + date.slice(0,2) + "T" + time + ":00" + "Z"
+		var data = {}
+		data['meeting_on'] =  date.slice(6,10) + "-" + date.slice(3,5) + "-" + date.slice(0,2) + "T" + time + ":00Z"
 		data['purpose'] = purpose
 		data['venue'] = venue
 		data['meet_type'] = meet_type
@@ -88,7 +79,6 @@ export default class MeetAdd extends Component{
                 this.setState({error: false, success: true})
             })
             .catch(error => {
-                console.log(error)
                 this.setState({error: true, success: false})
             })
         })
@@ -124,6 +114,8 @@ export default class MeetAdd extends Component{
           			value={this.state.date}
           			iconPosition="left"
           			onChange={this.handleChangeDate}
+          			closable
+          			popupPosition='left center'
         		/>
         		<TimeInput
         			required="True"
@@ -132,6 +124,8 @@ export default class MeetAdd extends Component{
           			value={this.state.time}
           			iconPosition="left"
           			onChange={this.handleChangeDate}
+          			closable
+          			popupPosition='left center'
         		/>
         		<Form.Select 
         			required
@@ -142,11 +136,12 @@ export default class MeetAdd extends Component{
         			placeholder='Type'
         		/>
         		<Dropdown multiple search clearable selection
+        			name='participants'
         			label='participants'
         			placeholder='participants'
         			disabled={!enabled}
         			options={this.state.sop}
-        			onChange={this.adropdown}
+        			onChange={this.handleChange}
         		/><br />
         			<Message success header="Success!" />
         			<Message error header="Failed!" content="Make sure date-time is in correct format and you are logged in..." />
