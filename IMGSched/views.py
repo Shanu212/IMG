@@ -6,7 +6,6 @@ from django.utils import timezone
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import user_passes_test
 
-
 from IMGSched.serializers import UserSerializer, CommentSerializer, MeetingSerializer
 from IMGSched.models import Meeting, Comment
 # from IMGSched.permissions import IsOwnerOrReadOnly, IsOwnerOrRead
@@ -30,7 +29,7 @@ class MeetingViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         if(self.request.user.is_staff):
             return Meeting.objects.all()
-        return Meeting.objects.all(participants__username=user)
+        return Meeting.objects.all().filter(participants__username=self.request.user)
 
 class CommentViewSet(viewsets.ModelViewSet):
     queryset = Comment.objects.all()

@@ -40,7 +40,7 @@ export default class MeetAdd extends Component{
     	}
   	}
 
-    componentDidMount(){
+  componentDidMount(){
         RefreshedToken(this.props.user.refresh)
         .then(response => {
             service.listUser(response.data.access)
@@ -79,6 +79,7 @@ export default class MeetAdd extends Component{
                 this.setState({error: false, success: true})
             })
             .catch(error => {
+                console.log(error)
                 this.setState({error: true, success: false})
             })
         })

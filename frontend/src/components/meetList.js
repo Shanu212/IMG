@@ -130,7 +130,7 @@ export default class MeetList extends Component {
                         </Segment>
                             </Accordion.Title>
                                 <Accordion.Content active={activeIndex === meeting_id}>
-                                    <FeedComment comments={comments[meeting_id]} onComment={this.handleComment} participants={meeting.participants} meeting_id={meeting_id} access={this.state.access} usern={this.props.user} creatern={meeting.created_by}/>
+                                    <FeedComment comments={comments[meeting_id]} onComment={this.handleComment} purpose={meeting.purpose} meeting_on={meeting.meeting_on} participants={meeting.participants} meeting_id={meeting_id} access={this.state.access} usern={this.props.user} creatern={meeting.created_by}/>
                                 </Accordion.Content>
                     </Item>
             )}

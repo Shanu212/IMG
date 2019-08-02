@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import Service from './indexService'
 import {Segment, Portal, Comment, Form, Button, Header, Container} from 'semantic-ui-react'
 import RefreshedToken from './rtoken';
+import ApiCalendar from 'react-google-calendar-api';
 
 const service = new Service();
 export default class FeedComment extends Component {
@@ -12,10 +13,12 @@ export default class FeedComment extends Component {
 			comments: this.props.comments,
             open: false,
             userna: {},
+            event: {}
 		}
 		this.handleChange = this.handleChange.bind(this)
 		this.onComment = this.onComment.bind(this)
         this.deleteMeet = this.deleteMeet.bind(this)
+        this.addEvent = this.addEvent.bind(this)
 	}
 
     handleClose = () => this.setState({ open: false })
@@ -65,6 +68,20 @@ export default class FeedComment extends Component {
         })
     }
 
+    addEvent(){
+        var event = {
+            summary: this.props.purpose,
+            'start': {
+                'dateTime': this.props.meeting_on,
+              },
+              'end': {
+                'dateTime': this.props.meeting_on,
+              },
+              id:'general'+this.props.meeting_id
+            }
+        ApiCalendar.createEvent(event).then(res => console.log(res))
+    }
+
     renderbutton(){
         if((this.props.usern.username == this.props.creatern) || this.props.usern.is_staff){
             const { open } = this.state
@@ -76,6 +93,8 @@ export default class FeedComment extends Component {
                 <Button size='small' basic color='blue' name='delete' onClick={this.deleteMeet}>
                     Delete Meet
                 </Button>
+
+                <Button onClick={this.addEvent}>Add to calendar</Button>
 
                 <Button
                     content='Meet Detail'
@@ -104,6 +123,7 @@ export default class FeedComment extends Component {
                         negative
                         onClick={this.handleClose}
                     />
+
                     </Segment>
                 </Portal>
                 </Container>
